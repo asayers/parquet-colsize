@@ -47,35 +47,29 @@ fn main() -> anyhow::Result<()> {
     let mut cols: Vec<_> = cols.into_iter().collect();
     cols.sort_by_key(|(_, (_, _, x))| -x);
     for (name, (encs, comp, size)) in cols {
-        write!(
+        let mut encs: Vec<String> = encs.iter().map(|x| x.to_string()).collect();
+        let comp = match comp {
+            _ if opts.uncompressed => None,
+            Compression::UNCOMPRESSED => None,
+            Compression::SNAPPY => Some("SNAPPY"),
+            Compression::GZIP(_) => Some("GZIP"),
+            Compression::LZO => Some("LZO"),
+            Compression::BROTLI(_) => Some("BROTLI"),
+            Compression::LZ4 => Some("LZ4"),
+            Compression::ZSTD(_) => Some("ZSTD"),
+            Compression::LZ4_RAW => Some("LZ4_RAW"),
+        };
+        if let Some(comp) = comp {
+            encs.push(comp.to_string());
+        }
+        writeln!(
             &mut wtr,
-            "{name}\t{:>9}\t{:>2.0}%\t(",
+            "{name}\t{:>9}\t{:>2.0}%\t({})",
             ByteSize(size as u64).to_string_as(true),
             100.0 * size as f64 / total as f64,
+            encs.into_iter().format(", "),
         )?;
-        if opts.uncompressed {
-            write!(&mut wtr, "{})", encs.iter().format(", "))?;
-        } else {
-            for enc in encs {
-                write!(&mut wtr, "{}, ", enc)?;
-            }
-            write!(&mut wtr, "{})", print_comp(comp))?;
-        }
-        writeln!(&mut wtr)?;
     }
     wtr.flush()?;
     Ok(())
-}
-
-fn print_comp(comp: Compression) -> &'static str {
-    match comp {
-        Compression::UNCOMPRESSED => "UNCOMPRESSED",
-        Compression::SNAPPY => "SNAPPY",
-        Compression::GZIP(_) => "GZIP",
-        Compression::LZO => "LZO",
-        Compression::BROTLI(_) => "BROTLI",
-        Compression::LZ4 => "LZ4",
-        Compression::ZSTD(_) => "ZSTD",
-        Compression::LZ4_RAW => "LZ4_RAW",
-    }
 }
