@@ -65,7 +65,7 @@ fn main() -> anyhow::Result<()> {
         writeln!(
             &mut wtr,
             "{name}\t{:>9}\t{:>2.0}%\t({})",
-            ByteSize(size as u64).to_string_as(true),
+            ByteSize(size as u64).to_string(),
             100.0 * size as f64 / total as f64,
             encs.into_iter().format(", "),
         )?;
