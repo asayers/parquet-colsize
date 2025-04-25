@@ -5,9 +5,9 @@ edition = "2021"
 author = "Alex Sayers"
 
 [dependencies]
-anyhow = "1.0.82"
-bpaf = { version = "0.9.11", features = ["derive"] }
+anyhow = "1.0.98"
+bpaf = { version = "0.9.19", features = ["derive"] }
 bytesize = "2.0.1"
-itertools = "0.12.1"
+itertools = "0.14.0"
 parquet = "55.0.0"
-tabwriter = "1.4.0"
+tabwriter = "1.4.1"
