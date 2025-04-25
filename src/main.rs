@@ -51,13 +51,13 @@ fn main() -> anyhow::Result<()> {
         let comp = match comp {
             _ if opts.uncompressed => None,
             Compression::UNCOMPRESSED => None,
-            Compression::SNAPPY => Some("SNAPPY"),
-            Compression::GZIP(_) => Some("GZIP"),
-            Compression::LZO => Some("LZO"),
-            Compression::BROTLI(_) => Some("BROTLI"),
-            Compression::LZ4 => Some("LZ4"),
-            Compression::ZSTD(_) => Some("ZSTD"),
-            Compression::LZ4_RAW => Some("LZ4_RAW"),
+            Compression::SNAPPY => Some("SNAPPY".to_owned()),
+            Compression::GZIP(x) => Some(format!("GZIP({})", x.compression_level())),
+            Compression::LZO => Some("LZO".to_owned()),
+            Compression::BROTLI(x) => Some(format!("BROTLI({})", x.compression_level())),
+            Compression::LZ4 => Some("LZ4".to_owned()),
+            Compression::ZSTD(x) => Some(format!("ZSTD({})", x.compression_level())),
+            Compression::LZ4_RAW => Some("LZ4_RAW".to_owned()),
         };
         if let Some(comp) = comp {
             encs.push(comp.to_string());
